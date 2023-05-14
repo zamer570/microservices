@@ -4,6 +4,7 @@ import com.example.UserService.entities.Hotel;
 import com.example.UserService.entities.Rating;
 import com.example.UserService.entities.User;
 import com.example.UserService.exceptions.ResourceNotFoundException;
+import com.example.UserService.external.services.HotelService;
 import com.example.UserService.repositories.UserRepository;
 import com.example.UserService.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private HotelService hotelService;
 
     @Autowired
     RestTemplate restTemplate;
@@ -44,8 +48,10 @@ public class UserServiceImpl implements UserService {
         List<Rating> rating = Arrays.asList(Objects.requireNonNull(restTemplate.getForObject("http://RATING-SERVICE/rating/getRatingByUserId/" + userId, Rating[].class)));
         System.out.println(rating);
         List<Rating> ratingWithHotel= rating.stream().peek(rating1 -> {
-            Hotel hotel = restTemplate.getForObject("http://HOTEL-SERVICE/hotel/getHotel?id={id}",Hotel.class,rating1.getHotelId());
-            rating1.setHotel(hotel);
+//            Hotel hotel = restTemplate.getForObject("http://HOTEL-SERVICE/hotel/getHotel?id={id}",Hotel.class,rating1.getHotelId());
+//            rating1.setHotel(hotel);
+            Hotel hotel1 = hotelService.getHotel(rating1.getHotelId());
+            rating1.setHotel(hotel1);
         }).collect(Collectors.toList());
 
         user.setRating(ratingWithHotel);

@@ -1,0 +1,15 @@
+server:
+  port: 8082
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: microservices
+  application:
+    name: RATING-SERVICE #RATING_SERVICE  _ IS INVALID IN HOST NAME
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true

@@ -9,12 +9,17 @@ spring:
     show-sql: true
   application:
     name: USER-SERVICE
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
+  config:
+    import: configserver:http://localhost:8085
+
+
+#it will come from config server
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
 #    service-url:
 #      defaultZone: http://localhost:8761/eureka
 

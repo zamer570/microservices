@@ -2,6 +2,8 @@ package com.example.UserService.controller;
 
 import com.example.UserService.entities.User;
 import com.example.UserService.services.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -23,9 +26,14 @@ public class UserController {
     }
 
     @GetMapping("/getUser/{userId}")
+    @CircuitBreaker(name="ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getUserByUserId(@PathVariable String userId){
         User user = userService.getUser(userId);
         return ResponseEntity.ok().body(user);
+    }
+
+    public ResponseEntity<User> ratingHotelFallback(String userId, Exception e){
+        return new ResponseEntity<>(new User(),HttpStatus.OK);
     }
 
     @GetMapping("/getUsers")
